@@ -42,26 +42,16 @@ st.markdown("""
 # =========================
 @st.cache_data
 def load_data():
-    df = pd.read_csv('day.csv')
+    # Menggunakan data yang sudah di-clean
+    df = pd.read_csv('day_clean.csv')
     df['dteday'] = pd.to_datetime(df['dteday'])
-
-    weather_map = {
-        1: 'Clear',
-        2: 'Cloudy',
-        3: 'Drizzling',
-        4: 'Heavy Rain'
-    }
-    df['weather_label'] = df['weathersit'].map(weather_map)
-
-    df['casual_ratio'] = df['casual'] / df['cnt']
-    df['registered_ratio'] = df['registered'] / df['cnt']
-
-    df['month'] = df['dteday'].dt.strftime('%Y-%m')
-    df['day_of_week'] = df['dteday'].dt.day_name()
     
     # Season mapping
     season_map = {1: 'Spring', 2: 'Summer', 3: 'Fall', 4: 'Winter'}
     df['season_label'] = df['season'].map(season_map)
+    
+    # Month untuk tren waktu
+    df['month'] = df['dteday'].dt.strftime('%Y-%m')
     
     return df
 
@@ -74,45 +64,38 @@ day_df = load_data()
 st.sidebar.header("🛠️ Filter Dashboard")
 st.sidebar.markdown("---")
 
-# Date Range Filter
-date_range = st.sidebar.date_input(
-    "Rentang Tanggal",
-    value=(day_df['dteday'].min(), day_df['dteday'].max()),
-    min_value=day_df['dteday'].min(),
-    max_value=day_df['dteday'].max()
-)
-
-# Weather Filter
+# Weather Filter - dengan default semua dipilih
 selected_weather = st.sidebar.multiselect(
     "Pilih Kondisi Cuaca",
-    options=day_df['weather_label'].unique(),
+    options=day_df['weathersit'].unique().tolist(),
+    default=day_df['weathersit'].unique().tolist()
 )
 
-# Season Filter
+# Season Filter - dengan default semua dipilih
 selected_season = st.sidebar.multiselect(
     "Pilih Musim",
-    options=day_df['season_label'].unique(),
+    options=day_df['season_label'].unique().tolist(),
+    default=day_df['season_label'].unique().tolist()
 )
 
-# Year Filter
+# Year Filter - dengan default semua dipilih
 selected_year = st.sidebar.multiselect(
     "Pilih Tahun",
-    options=sorted(day_df['yr'].unique()),
+    options=sorted(day_df['yr'].unique().tolist()),
+    default=sorted(day_df['yr'].unique().tolist()),
     format_func=lambda x: "2011" if x == 0 else "2012"
 )
 
 # Apply Filters
 filtered_df = day_df[
-    (day_df['weather_label'].isin(selected_weather)) &
+    (day_df['weathersit'].isin(selected_weather)) &
     (day_df['season_label'].isin(selected_season)) &
     (day_df['yr'].isin(selected_year))
 ]
 
-if len(date_range) == 2:
-    filtered_df = filtered_df[
-        (filtered_df['dteday'] >= pd.to_datetime(date_range[0])) &
-        (filtered_df['dteday'] <= pd.to_datetime(date_range[1]))
-    ]
+# Tampilkan jumlah data setelah filter
+st.sidebar.markdown("---")
+st.sidebar.caption(f"Menampilkan {len(filtered_df)} dari {len(day_df)} data")
 
 # =========================
 # Header
@@ -137,13 +120,13 @@ with tab1:
     
     with col1:
         st.subheader("Rata-rata Penyewaan Berdasarkan Kondisi Cuaca")
-        weather_avg = filtered_df.groupby('weather_label')['cnt'].mean().reset_index()
+        weather_avg = filtered_df.groupby('weathersit')['cnt'].mean().reset_index()
         
         fig = px.bar(
             weather_avg, 
-            x='weather_label', 
+            x='weathersit', 
             y='cnt',
-            color='weather_label',
+            color='weathersit',
             color_discrete_sequence=px.colors.qualitative.Set2,
             text_auto='.0f'
         )
@@ -282,7 +265,7 @@ with tab4:
 # =========================
 # Data Table
 # =========================
-with st.expander("📋 Lihat Data Mentah"):
+with st.expander("📋 Lihat Data"):
     st.dataframe(filtered_df.head(50), use_container_width=True)
     st.caption(f"Menampilkan 50 dari {len(filtered_df)} baris data")
 

@@ -10,34 +10,55 @@ Proyek ini adalah aplikasi dashboard yang dibangun menggunakan **Streamlit** unt
 
 - **Streamlit** - Framework untuk membuat aplikasi web interaktif
 - **Pandas** - Manipulasi dan analisis data
-- **Seaborn** - Visualisasi data statistik
-- **Matplotlib** - Plotting library untuk Python
 - **Plotly** - Library untuk membuat grafik interaktif
+- **Statsmodels** - Untuk analisis statistik dan trendline
 
 ## 📁 Struktur Berkas
 
 ```
 dashboard/
 ├── bike_sharing_dashboard.py  # File utama dashboard
-├── day.csv                    # Data harian
-├── hour.csv                   # Data per jam
+├── day_clean.csv              # Data harian (sudah cleaning)
+├── hour_clean.csv             # Data per jam (sudah cleaning)
 ├── requirements.txt           # Dependencies
 └── README.md                  # Dokumentasi ini
 ```
 
 ## 🚀 Cara Menjalankan
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 1. Setup Environment (Virtual Environment)
 
-2. **Jalankan dashboard:**
-   ```bash
-   streamlit run bike_sharing_dashboard.py
-   ```
+```bash
+# Buat virtual environment
+python -m venv venv
 
-3. Buka browser dan akses `http://localhost:8501`
+# Aktifkan virtual environment
+# Windows:
+venv\Scripts\activate
+
+# Linux/Mac:
+source venv/bin/activate
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Jalankan Dashboard
+
+```bash
+# Masuk ke direktori dashboard (jika belum)
+cd dashboard
+
+# Jalankan Streamlit
+streamlit run bike_sharing_dashboard.py
+```
+
+### 4. Buka Browser
+
+Akses `http://localhost:8501` di browser Anda.
 
 ## 📊 Fitur Dashboard
 
@@ -48,22 +69,24 @@ dashboard/
 ### 2. Cuaca & Musim
 - Analisis pengaruh kondisi cuaca terhadap penyewaan
 - Perbandingan penyewaan antar musim (Spring, Summer, Fall, Winter)
+- Hubungan suhu vs penyewaan
 
 ### 3. Tren Waktu
-- Tren penyewaan harian
-- Pola penyewaan berdasarkan hari dalam seminggu
+- Tren penyewaan bulanan
+- Proporsi casual vs registered per bulan
 
 ### 4. Analisis Lanjutan
-- Analisis korelasi antar variabel
-- Visualisasi data yang lebih detail
+- Correlation matrix antar variabel
+- Kategori penyewaan (Low, Medium, High)
 
 ## 🔍 Filter Interaktif
 
 Dashboard menyediakan filter berikut:
-- **Rentang Tanggal** - Filter berdasarkan periode waktu
 - **Kondisi Cuaca** - Clear, Cloudy, Drizzling, Heavy Rain
 - **Musim** - Spring, Summer, Fall, Winter
 - **Tahun** - 2011, 2012
+
+> **Catatan:** Dashboard menampilkan visualisasi default menggunakan seluruh data tanpa perlu memilih filter terlebih dahulu.
 
 ## 📈 Variabel Data
 
