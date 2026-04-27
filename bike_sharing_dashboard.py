@@ -196,7 +196,7 @@ with tab2:
             color='season_label',
             size='cnt',
             color_discrete_sequence=px.colors.qualitative.Set1,
-            trendline="ols"
+            trendline="ols" 
         )
         fig.update_layout(xaxis_title='Suhu (Normalized)', yaxis_title='Jumlah Penyewaan')
         st.plotly_chart(fig, use_container_width=True)
